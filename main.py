@@ -2,7 +2,7 @@ import requests as consulta
 
 # https://api.chucknorris.io/jokes/categories
 categorias = consulta.get('https://api.chucknorris.io/jokes/categories')
-print('categorias: ', categorias.json())
+# print('categorias: ', categorias.json())
 lista_categoria = categorias.json()
 # mostrat cada categoria con un numero 
 lista_categoria_dict = []
@@ -24,7 +24,7 @@ for diccionario in lista_categoria_dict:
 
 
 #print('ultimo dato de lista categoria:', lista_categoria[len(lista_categoria) - 1])
-response = consulta.get('https://api.chucknorris.io/jokes/random?category={categoria_seleccionada}')
+response = consulta.get(f'https://api.chucknorris.io/jokes/random?category={categoria_seleccionada}')
 
 #print('codigo http de respuesta: ',response.status_code)
 #print('cabecera: ', response.headers['content-type'])
