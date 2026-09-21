@@ -1,0 +1,72 @@
+import requests as peticion 
+
+def search_pokemon(name):
+    url = peticion.get(f'https://pokeapi.co/api/v2/pokemon/{str(name).lower()}')
+
+    if url.status_code == 404:
+        return None
+
+    lista_categorias = url.json()
+
+    return lista_categorias
+
+
+def pokemon_types(lc):
+    pokemon_types = lc['types']
+    result = ''
+    for a in pokemon_types:
+        result += ((a['type']['name'] + ',').capitalize())
+    return result.strip(',')
+
+def abilities(lc):
+    pokemon_abilities = lc['abilities']
+    result = ''
+    for a in pokemon_abilities:
+        result += ((a['ability']['name'] + ',').capitalize())
+    return result.strip(',')
+
+def search_species(lc):
+    url_species = lc['species']['url']
+    lc_species = peticion.get(url_species)
+    return lc_species.json()
+
+def category(lc_species):
+    for elm in lc_species['genera']:
+        if elm['language']['name'] == 'en':
+            return elm['genus']
+
+    return 'Unknown'
+
+def gender(lc_species):
+    rate = lc_species['gender_rate']
+    if rate == -1:
+        return 'Sin sexo'
+    hembra = rate / 8 * 100
+    macho = 100 - hembra
+    return f'♂ {macho}% | ♀ {hembra}%'
+
+def pokedex(lc):
+    print(f'Nombre: {lc['name'].capitalize()} | Nº {lc['id']}')
+    print(f'Tipo: {pokemon_types(lc)}')
+    print(f'Altura: {lc['height']/10}m | peso: {lc['weight'] / 10}kg')
+    print(f'Habilidades: {abilities(lc)} ')
+    lc_species = search_species(lc)
+    print(f'Categoría: {category(lc_species)}')
+    print(f'Sexo: {gender(lc_species)}')
+
+
+
+def game_pokedesx():
+
+    while True:
+        print('Bienvennido a la Pokedex 🎮')
+        usuario = input('Introduce el nombre del pokemon/id, "salir" para terminar: ')
+        if usuario == 'salir':
+            break
+        if usuario:
+            pokedex(search_pokemon(usuario))
+        else:
+            print('No lo he podido encontrar, prueba otra vez.')
+
+if __name__ == '__main__':
+    game_pokedesx()
